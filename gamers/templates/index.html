@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        {% load static %}
+        <title>BG Gamers</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="Just an NFT community in love with bubblegoose">
+        <meta name="keywords" content="BGG, bubbleGoose, Gamers, NFT, community, Gaming">
+        <link rel="icon" href="{% static 'img/logo.jpg' %}" type="image/icon type">
+        <link href="{% static 'css/all.min.css' %}" rel="stylesheet" type="text/css">
+        <link href="{% static 'css/bootstrap.css' %}" rel="stylesheet" type="text/css">
+        <link href="{% static 'css/custom.css' %}" rel="stylesheet" type="text/css">
+        <script type="text/javascript">
+        </script>
+        <script src="{% static 'fontawesomefree/js/all.min.js' %}"></script>
+        <script src="{% static 'fontawesomefree/js/all.min.js' %}"></script>
+        <script src="{% static 'js/jquery-3.6.0.js' %}"></script>
+        <script src="{% static 'js/myjs.js' %}"> </script>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz@8..144&display=swap" rel="stylesheet">
+	    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,400;0,700;1,400;1,700&family=Quicksand:wght@600;700&display=swap" rel="stylesheet">
+    </head>
+    <body>
+        <div class="bgdiv">
+        <nav class="navbar navbg sticky-top">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="/">
+                    <img src="{% static 'img/logo.jpg' %}" class="img-rounded" alt="bglogo" width="80" height="80">
+                </a>
+                <span class="social-icons">
+                    <a href="https://www.twitter.com/BubblegooseXYZ" class="twitter-icon" target="_blank"><i class="fa-brands fa-twitter fa-2x "></i></a>
+                    <a href="https://discord.gg/5R9M5UWAzw" class="discord-icon" target="_blank"><i class="fa-brands fa-discord fa-2x "></i></a>
+                </span>
+            </div>
+        </nav>
+        <div class="container-fluid mt-2">
+            <div class="div-header mt-2">
+                <h2 class="h-text">Upcoming games</h2>
+            </div>
+            {% if upcomingGames %}
+                <div class="row">
+                    {% for game in upcomingGames %}
+                        <div class="col-lg-4 col-md-6 mt-2 mb-2">
+                            <div class="card">
+                                {% if game.image %}
+                                    <img src={{game.image.url}} class="card-img-top" alt="game logo">
+                                {% endif %}
+                                <div class="card-body">
+                                <h5 class="card-title">{{game.name}}</h5>
+                                <p class="card-text">Host: {{game.host}}, {{game.pub_date}}</p>
+                                <ul class="list-group list-group-flush">
+                                {% if game.played %}
+                                    <li class="list-group-item"><i class="fa-solid fa-circle-check"></i></li>
+                                {% else %}
+                                    <li class="list-group-item"><i class="fa-regular fa-circle-check"></i></li>
+                                {% endif %}
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="w-45"></div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="card text-dark bg-info">
+                    <div class="card-body">
+                        No upcoming games available.
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+        <div  class="container-fluid mt-2 mb-4">
+            <div class="div-header">
+                <h3 class="h-text">Previous games</h3>
+            </div>
+            <div id="gameContainer" style="display:flex;" class="row mt-2">
+
+            </div>
+        </div>
+        <script type="text/javascript">
+            $(document).ready(function(){
+                var gameList = {{gameList2|safe}}
+                var totalItem = gameList.length;
+                var itemPerPage = 3
+                var endNumber
+                var numberofPages =  Math.ceil(totalItem / itemPerPage)
+                var pageNumber = 1
+                endNumber = pageNumber * itemPerPage
+                var startNumber = endNumber - itemPerPage
+                var html=''
+                for(var i=startNumber; i<endNumber; i++) {
+                    html = '<div class="col-lg-4 col-md-6 mt-2">'
+                    html += '<div class="card"><div class="card-body"><h5 class="card-title">'+gameList[i].name+'</h5><p class="card-text">Host:'+gameList[i].host, gameList[i].pub_date+'</p>'
+                    html += '<ul class="list-group list-group-flush" style="width: 100%;">'
+                    if (gameList[i].winners.length > 0){
+                        for (var j = 0; j < gameList[i].winners.length; j++) {
+                            html += '<li class="list-group-item d-flex justify-content-between align-items-center">'+gameList[i].winners[j][1]+'<span class="badge bg-secondary bg-info text-dark">'+gameList[i].winners[j][2]+'</span>'
+                            if (gameList[i].winners[j][2] === 1){
+                                html += '<span class="badge rounded-pill bg-primary"> Winner<i class="fa-solid fa-trophy"></i></span>'
+                            }
+                            html += '</li>'
+                        }
+                    }
+                    else{
+                        html += '<span>No winner yet</span>'
+                    }
+                    if (gameList[i].played){
+                        html += '<li class="list-group-item"><i class="fa-solid fa-circle-check"></i></li>'
+                    }
+                    else{
+                        html += '<li class="list-group-item"><i class="fa-regular fa-circle-check"></i></li>'
+                    }
+                    html += '</ul></div></div></div>'
+                    $('#gameContainer').append(html)
+                }
+                $('#pagenumber').html('<span>'+pageNumber+ 'of' +numberofPages+'</span>')
+                if (pageNumber == 1){
+                    $("#previous").attr("disabled", true);
+                } else{
+                    $("#previous").attr("disabled", false);
+                }
+
+                $("#next").click(function(){
+                    pageNumber = pageNumber + 1
+                    prevEndNumber = endNumber
+                    endNumber = pageNumber * itemPerPage
+                    var startNumber = endNumber - itemPerPage
+                    if(endNumber > totalItem) {
+                        startNumber = prevEndNumber
+                        endNumber = totalItem
+                    }
+                    
+                    $('#gameContainer').hide()
+                    $('#gameContainer').empty()
+                    
+                    html = ''
+                    for(var i=startNumber; i<endNumber; i++) {
+                        html = '<div class="col-lg-4 col-md-6 mt-2">'
+                        html += '<div class="card"><div class="card-body"><h5 class="card-title">'+gameList[i].name+'</h5><p class="card-text">Host:'+gameList[i].host, gameList[i].pub_date+'</p>'
+                                
+                        html += '<ul class="list-group list-group-flush style="width: 100%;">'
+                        if (gameList[i].winners.length > 0){
+                            for (var j = 0; j < gameList[i].winners.length; j++) {
+                                html += '<li class="list-group-item d-flex justify-content-between align-items-center">'+gameList[i].winners[j][1]+ '<span style="margin:10;" class="badge bg-secondary bg-info text-dark"> '+gameList[i].winners[j][2]+'</span>'
+                                if (gameList[i].winners[j][2] === 1){
+                                    html += '<span class="badge rounded-pill bg-primary"> Winner<i class="fa-solid fa-trophy"></i></span>'
+                                }
+                                html += '</li>'
+                            }
+                        }
+                        else{
+                            html += '<span>No winner yet</span>'
+                        }
+                        if (gameList[i].played){
+                            html += '<li class="list-group-item"><i class="fa-solid fa-circle-check"></i></li>'
+                        }
+                        else{
+                            html += '<li class="list-group-item"><i class="fa-regular fa-circle-check"></i></li>'
+                        }
+                        html += '</ul></div></div></div>'
+                        $('#gameContainer').append(html)
+                    }
+                    $('#gameContainer').show()
+                    $('#pagenumber').html('<span>'+pageNumber+ 'of' +numberofPages+'</span>')
+                    if (pageNumber == numberofPages){
+                        $("#next").attr("disabled", true);
+                    } else{
+                        $("#next").attr("disabled", false);
+                    }
+                    if (pageNumber == 1){
+                        $("#previous").attr("disabled", true);
+                    } else{
+                        $("#previous").attr("disabled", false);
+                    }
+
+                })
+            
+                $("#previous").click(function(){
+                    pageNumber = pageNumber - 1
+                    endNumber = pageNumber * itemPerPage
+                    startNumber = endNumber - itemPerPage
+                    $('#gameContainer').hide()
+                    $('#gameContainer').empty()
+                    html = ''
+                    for(var i=startNumber; i<endNumber; i++) {
+                        html = '<div class="col-lg-4 col-md-6 mt-2">'
+                        html += '<div class="card"><div class="card-body"><h5 class="card-title">'+gameList[i].name+'</h5><p class="card-text">Host:'+gameList[i].host, gameList[i].pub_date+'</p>'
+                                
+                        html += '<ul class="list-group list-group-flush style="width: 100%;">'
+                        if (gameList[i].winners.length > 0){
+                            for (var j = 0; j < gameList[i].winners.length; j++) {
+                                html += '<li class="list-group-item d-flex justify-content-between align-items-center">'+gameList[i].winners[j][1]+'<span class="badge bg-secondary bg-info text-dark">'+gameList[i].winners[j][2]+'</span>'
+                                if (gameList[i].winners[j][2] === 1){
+                                    html += '<span class="badge rounded-pill bg-primary"> Winner<i class="fa-solid fa-trophy"></i></span>'
+                                }
+                                html += '</li>'
+                            }
+                        }
+                        else{
+                            html += '<span>No winner yet</span>'
+                        }
+                        if (gameList[i].played){
+                            html += '<li class="list-group-item"><i class="fa-solid fa-circle-check"></i></li>'
+                        }
+                        else{
+                            html += '<li class="list-group-item"><i class="fa-regular fa-circle-check"></i></li>'
+                        }
+                        html += '</ul></div></div></div>'
+                        $('#gameContainer').append(html)
+                        
+                    }
+                    $('#gameContainer').show()
+                    $('#pagenumber').html('<span>'+pageNumber+ 'of' +numberofPages+'</span>')
+                    if (pageNumber == numberofPages){
+                        $("#next").attr("disabled", true);
+                    } else{
+                        $("#next").attr("disabled", false);
+                    }
+                    if (pageNumber == 1){
+                        $("#previous").attr("disabled", true);
+                    } else{
+                        $("#previous").attr("disabled", false);
+                    }
+                })
+            })
+        </script>
+        <nav aria-label="Page navigation example mt-4">
+            <ul class="pagination justify-content-center">
+                <li class="page-item"><button class="btn btn-secondary" id="previous">Previous</button></li>
+                <li id="pagenumber"></li>
+                <li class="page-item"><button class="btn btn-secondary" id="next">Next</button></li>
+            </ul>
+        </nav>
+        <nav class="navbar sticky-bottom navbar-dark bg-dark">
+            <div class="container-fluid">
+              <span class="navbar-brand" href="#">Developed by Solowitkelechi#6899 | BubbleGooseGamers.</span>
+            </div>
+        </nav>
+    </div>
+    </body>
+</html>

@@ -1,0 +1,35 @@
+<div class="row mt-2">
+    {% for game in gameList %}
+        <div class="col-lg-3 col-sm-4 col-md-4  mt-2">
+            <div class="card">
+                <div class="card-body">
+            <h5 class="card-title">{{game.name}}</h5>
+            <p class="card-text">Host: {{game.host}}, {{game.pub_date}}</p>
+            <ul class="list-group list-group-flush">
+                
+                <li class="list-group-item">
+                    <ul class="list-group list-group-flush">
+                    {% if game.winners|length > 0 %}
+                        {% for winner in game.winners %}
+                            <li class="list-group-item">{{winner.player.discordId}} <span class="badge bg-secondary bg-info text-dark">{{winner.position}}</span> {% if winner.position == 1 %}<span class="badge rounded-pill bg-primary">Winner <i class="fa-solid fa-trophy"></i></span>{% endif %}</li>
+                        {% endfor %}
+                    {% else %}
+                        No winners yet
+                    {% endif %}
+                    </ul>
+                </li>
+                
+                {% if game.played %}
+                    <li class="list-group-item"><i class="fa-solid fa-circle-check"></i></li>
+                {% else %}
+                    <li class="list-group-item"><i class="fa-regular fa-circle-check"></i></li>
+                {% endif %}
+            </ul>
+        </div>
+        </div>
+    </div>
+        <div class="w-45"></div>
+    {% endfor %}
+    </div>
+    
+</div>

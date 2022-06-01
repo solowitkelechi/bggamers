@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        {% load static %}
+        {% load crispy_forms_tags %}
+        <title>BubbleGoose Gamers</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="">
+        <meta name="keywords" content="">
+        <script type="text/javascript">
+            window.CSRF_TOKEN = "{{ csrf_token }}";
+        </script>
+        <script src="{% static 'fontawesomefree/js/all.min.js' %}"></script>
+        <link href="{% static 'fontawesomefree/css/all.min.css' %}" rel="stylesheet" type="text/css">
+        <link href="{% static 'css/bootstrap.css' %}" rel="stylesheet" type="text/css">
+        <script src="{% static 'js/bootstrap.js' %}"></script>
+        <script src="{% static 'js/jquery-3.6.0.js' %}"></script>
+        <script src="{% static 'js/myjs.js' %}"> </script>
+    </head>
+    <body>
+        {% if user.is_authenticated %}
+            <a href="{% url 'logout' %}">logout</a>
+        {% endif %}
+
+        <form method="post" id="addgame" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{gameForm|crispy}}
+            <input type="submit" value="schedule game" />
+            <div style="display:none" id="gameFormErrors">
+                <i class="fa-solid fa-xmark" id="closeGameErrors"></i>
+            </div>
+        </form>
+        
+        <form method="post" action="" id="addplayer">
+            {% csrf_token %}
+            {{playerForm|crispy}}
+            <input type="submit" value="add"/>
+            <div style="display:none" id="playerFormErrors">
+                <i class="fa-solid fa-xmark" id="closePlayerErrors"></i>
+            </div>
+        </form>
+        
+        <form method="post" id="addwinners">
+            {% csrf_token %}
+            {{winnersForm|crispy}}
+            <input type="submit" value="pick winner"/>
+            <div style="display:none" id="winnerFormErrors">
+                <i class="fa-solid fa-xmark" id="closeWinnerErrors"></i>
+            </div>
+        </form>
+
+        <form method="post" id="playerstogame">
+            {% csrf_token %}
+            <select name="game" id="game">
+                {% for game in games %}
+                    <option value={{game.id}}>{{game.name}} {{game.pub_date}}</option>
+                {% endfor %}
+            </select>
+            <select name="players" id="players" multiple required="required">
+                {% for player in players %}
+                    <option value={{player.id}}>{{player.discordId}}</option>
+                {% endfor %}
+            </select>
+            <button type="submit" id="addplayersform">add players to game</button>
+            <div style="display:none" id="pgFormErrors">
+                <i class="fa-solid fa-xmark" id="closePgErrors"></i>
+            </div>
+        </form>
+        
+        <ul>
+            {% for game in gameList %}
+                <li>{{game.name}}</li>
+                <li>{{game.pub_date}}</li>
+                <li>{{game.host}}</li>
+                <div id="fixed{{game.id}}pdata">
+                    {% if game.played %}
+                        <li>
+                            {% for player in game.players %}
+                                {{player.discordId}}
+                            {% endfor %}
+                        </li>
+                        <li>
+                            {% for winner in game.winners %}
+                                {{winner.player.discordId}} | {{winner.position}}
+                            {% endfor %}
+                        </li>
+                    {% endif %}
+                </div>
+                <div id="{{game.id}}pdata">
+
+                </div>
+                <span id="toggle{{game.id}}fixed">
+                    {% if game.played %}
+                        <li>played</li>
+                    {% else %}
+                        <li>not played</li>
+                    {% endif %}
+                </span>
+                <span id="toggle{{game.id}}">
+                    
+                </span>
+                <button onclick="showEditModal('{{game.id}}')">edit</button>
+                <div id="csrf">
+                    {% csrf_token %}
+                </div>
+                <button id="{{game.id}}">toggle status</button>
+                <script>
+                    $(document).ready(function(){
+                        $("#{{game.id}}").click(function(){
+                            $.ajax({
+                                type: 'POST',
+                                url: "{% url 'togglestatus' %}",
+                                headers: {
+                                    'X-CSRFToken': document.getElementById('csrf').querySelector('input').value
+                                },
+                                data: {
+                                    "gameid": {{game.id}},
+                                },
+                                dataType: 'json',
+                                success: function(response){
+                                    $("#toggle{{game.id}}fixed").hide();
+                                    if (response["data"]){
+                                        $("#toggle{{game.id}}").html("<li>played<li>");
+                                    }
+                                    else{
+                                        $("#toggle{{game.id}}").html("<li>not played<li>");
+                                    }
+                                },
+                                error: function (response){
+                                    alert(response["responseJSON"]["error"])
+                                }
+                            })
+                        });
+                    });
+                </script>
+                
+            {% endfor %}
+        </ul>
+    </body>
+</html>

@@ -81,7 +81,7 @@
                 $(document).ready(function(){
                     var gameList = {{gameList2|safe}}
                     var totalItem = gameList.length;
-                    var itemPerPage = 3
+                    var itemPerPage = 10
                     var endNumber
                     var numberofPages =  Math.ceil(totalItem / itemPerPage)
                     var pageNumber = 1
@@ -96,7 +96,7 @@
                             for (var j = 0; j < gameList[i].winners.length; j++) {
                                 html += '<li class="list-group-item d-flex justify-content-between align-items-center">'+gameList[i].winners[j][1]+'<span class="badge bg-secondary bg-info text-dark">'+gameList[i].winners[j][2]+'</span>'
                                 if (gameList[i].winners[j][2] === 1){
-                                    html += '<span class="badge rounded-pill bg-primary"> Winner<i class="fa-solid fa-trophy"></i></span>'
+                                    html += '<span class="badge rounded-pill bg-primary" style="padding: 4px;">Winner <i class="fa-solid fa-trophy"></i></span>'
                                 }
                                 html += '</li>'
                             }
@@ -113,7 +113,8 @@
                         html += '</ul></div></div></div>'
                         $('#gameContainer').append(html)
                     }
-                    $('#pagenumber').html('<span>'+pageNumber+ 'of' +numberofPages+'</span>')
+
+                    $('#pagenumber').append('<span>'+pageNumber+' of '+numberofPages+'</span>')
                     if (pageNumber == 1){
                         $("#previous").attr("disabled", true);
                     } else{
@@ -143,7 +144,7 @@
                                 for (var j = 0; j < gameList[i].winners.length; j++) {
                                     html += '<li class="list-group-item d-flex justify-content-between align-items-center">'+gameList[i].winners[j][1]+ '<span style="margin:10;" class="badge bg-secondary bg-info text-dark"> '+gameList[i].winners[j][2]+'</span>'
                                     if (gameList[i].winners[j][2] === 1){
-                                        html += '<span class="badge rounded-pill bg-primary"> Winner<i class="fa-solid fa-trophy"></i></span>'
+                                        html += '<span class="badge rounded-pill bg-primary" style="padding: 4px;">Winner <i class="fa-solid fa-trophy"></i></span>'
                                     }
                                     html += '</li>'
                                 }
@@ -161,7 +162,8 @@
                             $('#gameContainer').append(html)
                         }
                         $('#gameContainer').show()
-                        $('#pagenumber').html('<span>'+pageNumber+ 'of' +numberofPages+'</span>')
+                        $('#pagenumber').empty()
+                        $('#pagenumber').append('<span>'+pageNumber+' of '+numberofPages+'</span>')
                         if (pageNumber == numberofPages){
                             $("#next").attr("disabled", true);
                         } else{
@@ -191,7 +193,7 @@
                                 for (var j = 0; j < gameList[i].winners.length; j++) {
                                     html += '<li class="list-group-item d-flex justify-content-between align-items-center">'+gameList[i].winners[j][1]+'<span class="badge bg-secondary bg-info text-dark">'+gameList[i].winners[j][2]+'</span>'
                                     if (gameList[i].winners[j][2] === 1){
-                                        html += '<span class="badge rounded-pill bg-primary"> Winner<i class="fa-solid fa-trophy"></i></span>'
+                                        html += '<span class="badge rounded-pill bg-primary" style="padding: 4px;">Winner <i class="fa-solid fa-trophy"></i></span>'
                                     }
                                     html += '</li>'
                                 }
@@ -210,7 +212,8 @@
                             
                         }
                         $('#gameContainer').show()
-                        $('#pagenumber').html('<span>'+pageNumber+ 'of' +numberofPages+'</span>')
+                        $('#pagenumber').empty()
+                        $('#pagenumber').append('<span>'+pageNumber+' of '+numberofPages+'</span>')
                         if (pageNumber == numberofPages){
                             $("#next").attr("disabled", true);
                         } else{
@@ -227,7 +230,7 @@
             <nav aria-label="Page navigation example mt-4">
                 <ul class="pagination justify-content-center">
                     <li class="page-item"><button class="btn btn-secondary" id="previous">Previous</button></li>
-                    <li id="pagenumber"></li>
+                    <li class="page-item disabled" style="padding:5px" id="pagenumber"></li>
                     <li class="page-item"><button class="btn btn-secondary" id="next">Next</button></li>
                 </ul>
             </nav>

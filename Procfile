@@ -1,1 +1,1 @@
-web: gunicorn bggamers.wsgi --log-file -
+web: gunicorn BGgamers.wsgi --log-file -

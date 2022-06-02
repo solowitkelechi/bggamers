@@ -113,8 +113,7 @@
                         html += '</ul></div></div></div>'
                         $('#gameContainer').append(html)
                     }
-
-                    $('#pagenumber').append('<span>'+pageNumber+' of '+numberofPages+'</span>')
+                    $("#pagenumber").append('<span>'+pageNumber+' of '+numberofPages+'</span>')
                     if (pageNumber == 1){
                         $("#previous").attr("disabled", true);
                     } else{
@@ -162,8 +161,8 @@
                             $('#gameContainer').append(html)
                         }
                         $('#gameContainer').show()
-                        $('#pagenumber').empty()
-                        $('#pagenumber').append('<span>'+pageNumber+' of '+numberofPages+'</span>')
+                        $("#pagenumber").empty()
+                        $("#pagenumber").append('<span>'+pageNumber+' of '+numberofPages+'</span>')
                         if (pageNumber == numberofPages){
                             $("#next").attr("disabled", true);
                         } else{
@@ -212,8 +211,8 @@
                             
                         }
                         $('#gameContainer').show()
-                        $('#pagenumber').empty()
-                        $('#pagenumber').append('<span>'+pageNumber+' of '+numberofPages+'</span>')
+                        $("#pagenumber").empty()
+                        $("#pagenumber").append('<span>'+pageNumber+' of '+numberofPages+'</span>')
                         if (pageNumber == numberofPages){
                             $("#next").attr("disabled", true);
                         } else{
@@ -227,7 +226,7 @@
                     })
                 })
             </script>
-            <nav aria-label="Page navigation example mt-4">
+            <nav class="mt-4 mb-2">
                 <ul class="pagination justify-content-center">
                     <li class="page-item"><button class="btn btn-secondary" id="previous">Previous</button></li>
                     <li class="page-item disabled" style="padding:5px" id="pagenumber"></li>
@@ -236,7 +235,7 @@
             </nav>
             <nav class="navbar navbar-dark bg-dark">
                 <div class="container-fluid" style="padding:5px;padding: 5px;">
-                  <span class="navbar-brand" href="#"style="font-size:15px">Developed by Solowitkelechi#6899 | BubbleGooseGamers.</span>
+                  <span class="navbar-brand" href="#"style="font-size:14px; padding: 3px;">Developed by Solowitkelechi#6899 | BubbleGooseGamers.</span>
                 </div>
             </nav>
         </div>

@@ -114,6 +114,11 @@
                         $('#gameContainer').append(html)
                     }
                     $("#pagenumber").append('<span>'+pageNumber+' of '+numberofPages+'</span>')
+                    if (pageNumber == numberofPages){
+                        $("#next").attr("disabled", true);
+                    } else{
+                        $("#next").attr("disabled", false);
+                    }
                     if (pageNumber == 1){
                         $("#previous").attr("disabled", true);
                     } else{

@@ -5,130 +5,161 @@
         {% load crispy_forms_tags %}
         <title>BubbleGoose Gamers</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <meta name="description" content="">
-        <meta name="keywords" content="">
-        <script type="text/javascript">
-            window.CSRF_TOKEN = "{{ csrf_token }}";
-        </script>
-        <script src="{% static 'fontawesomefree/js/all.min.js' %}"></script>
+        <meta name="description" content="Just an NFT community in love with bubblegoose">
+        <meta name="keywords" content="BGG, bubbleGoose, Gamers, NFT, community, Gaming">
+        <link rel="icon" href="{% static 'img/logo.jpg' %}" type="image/icon type">
         <link href="{% static 'fontawesomefree/css/all.min.css' %}" rel="stylesheet" type="text/css">
         <link href="{% static 'css/bootstrap.css' %}" rel="stylesheet" type="text/css">
-        <script src="{% static 'js/bootstrap.js' %}"></script>
+        <link href="{% static 'css/custom.css' %}" rel="stylesheet" type="text/css">
+        <script type="text/javascript">
+        </script>
+        <script src="{% static 'fontawesomefree/js/all.min.js' %}"></script>
         <script src="{% static 'js/jquery-3.6.0.js' %}"></script>
         <script src="{% static 'js/myjs.js' %}"> </script>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz@8..144&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,400;0,700;1,400;1,700&family=Quicksand:wght@600;700&display=swap" rel="stylesheet">
     </head>
     <body>
-        {% if user.is_authenticated %}
-            <a href="{% url 'logout' %}">logout</a>
-        {% endif %}
-
-        <form method="post" id="addgame" enctype="multipart/form-data">
-            {% csrf_token %}
-            {{gameForm|crispy}}
-            <input type="submit" value="schedule game" />
-            <div style="display:none" id="gameFormErrors">
-                <i class="fa-solid fa-xmark" id="closeGameErrors"></i>
-            </div>
-        </form>
-        
-        <form method="post" action="" id="addplayer">
-            {% csrf_token %}
-            {{playerForm|crispy}}
-            <input type="submit" value="add"/>
-            <div style="display:none" id="playerFormErrors">
-                <i class="fa-solid fa-xmark" id="closePlayerErrors"></i>
-            </div>
-        </form>
-        
-        <form method="post" id="addwinners">
-            {% csrf_token %}
-            {{winnersForm|crispy}}
-            <input type="submit" value="pick winner"/>
-            <div style="display:none" id="winnerFormErrors">
-                <i class="fa-solid fa-xmark" id="closeWinnerErrors"></i>
-            </div>
-        </form>
-
-        <form method="post" id="playerstogame">
-            {% csrf_token %}
-            <select name="game" id="game">
-                {% for game in games %}
-                    <option value={{game.id}}>{{game.name}} {{game.pub_date}}</option>
-                {% endfor %}
-            </select>
-            <select name="players" id="players" multiple required="required">
-                {% for player in players %}
-                    <option value={{player.id}}>{{player.discordId}}</option>
-                {% endfor %}
-            </select>
-            <button type="submit" id="addplayersform">add players to game</button>
-            <div style="display:none" id="pgFormErrors">
-                <i class="fa-solid fa-xmark" id="closePgErrors"></i>
-            </div>
-        </form>
-        
-        <ul>
-            {% for game in gameList %}
-                <li>{{game.name}}</li>
-                <li>{{game.pub_date}}</li>
-                <li>{{game.host}}</li>
-                <div id="fixed{{game.id}}pdata">
-                    {% if game.played %}
-                        <li>
-                            {% for winner in game.winners %}
-                                {{winner.player.discordId}} | {{winner.position}}
-                            {% endfor %}
-                        </li>
-                    {% endif %}
+        <div class="bgdiv">
+            <nav class="navbar navbg sticky-top">
+                <div class="container-fluid">
+                    <a class="navbar-brand" href="/">
+                        <img src="{% static 'img/logo.jpg' %}" class="img-rounded" alt="bglogo" width="80" height="80">
+                    </a>
+                    <span class="social-icons">
+                        <a href="https://www.twitter.com/BubblegooseXYZ" class="twitter-icon" target="_blank"><i class="fa-brands fa-twitter fa-2x "></i></a>
+                        <a href="https://discord.gg/5R9M5UWAzw" class="discord-icon" target="_blank"><i class="fa-brands fa-discord fa-2x "></i></a>
+                    </span>
                 </div>
-                <div id="{{game.id}}pdata">
+            </nav>
+            <div class="container-fluid">
+                {% if user.is_authenticated %}
+                    <a href="{% url 'logout' %}" class="btn btn-danger mb-2">logout</a>
+                {% endif %}
+                <div class="row">
+                    <div class="col-lg-4 col-md-6 mt-2 mb-2">
+                        <div class="card mt-2">
+                            <div class="card-body">
+                                <h6 class="card-title">Add Games</h6>
+                                <form method="post" id="addgame" enctype="multipart/form-data">
+                                    {% csrf_token %}
+                                    {{gameForm|crispy}}
+                                    <input type="submit" class="btn btn-primary" value="Schedule" />
+                                    <div style="display:none" class="alert alert-primary mt-2" role="alert" id="gameFormErrors">
+                                        <i class="fa-solid fa-xmark" id="closeGameErrors"></i>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6 mb-2 mt-2">
+                        <div class="card mt-2">
+                            <div class="card-body">
+                                <h6 class="card-title">Add Player discord id</h6>
+                                <form method="post" action="" id="addplayer">
+                                    {% csrf_token %}
+                                    {{playerForm|crispy}}
+                                    <input type="submit" class="btn btn-primary" value="add"/>
+                                    <div style="display:none" class="alert alert-primary mt-2" role="alert" id="playerFormErrors">
+                                        <i class="fa-solid fa-xmark" id="closePlayerErrors"></i>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6 mb-2 mt-2">
+                        <div class="card mt-2">
+                            <div class="card-body">
+                                <h6 class="card-title">Choose winners</h6>
+                                <form method="post" id="addwinners">
+                                    {% csrf_token %}
+                                    {{winnersForm|crispy}}
+                                    <input type="submit" class="btn btn-primary" value="add winner"/>
+                                    <div style="display:none" class="alert alert-primary mt-2" role="alert" id="winnerFormErrors">
+                                        <i class="fa-solid fa-xmark" id="closeWinnerErrors"></i>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="w-45"></div>
+                </div>
+            </div>
+            <div class="container-fluid">
+                <h5 class="mb-2 mt-2">List of unplayed games</h5>
+                <div class="row">
+                    {% for game in gameList %}
+                        <div class="col-lg-4 col-md-6 mb-2 mt-2">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5 class="card-title">{{game.name}}</h5>
+                                    <ul class="list-group list-group-flush">
+                                        <li class="list-group-item">{{game.host}}</li>
+                                        <li class="list-group-item">{{game.pub_date}}</li>
+                                        <div id="fixed{{game.id}}pdata">
+                                            {% if game.played %}
+                                                <li class="list-group-item">
+                                                    {% for winner in game.winners %}
+                                                        {{winner.player.discordId}} | {{winner.position}}
+                                                    {% endfor %}
+                                                </li>
+                                            {% endif %}
+                                        </div>
+                                        <div id="{{game.id}}pdata">
 
+                                        </div>
+                                        <span id="toggle{{game.id}}fixed">
+                                            {% if game.played %}
+                                                <li class="list-group-item">played</li>
+                                            {% else %}
+                                                <li class="list-group-item">not played</li>
+                                            {% endif %}
+                                        </span>
+                                        <span id="toggle{{game.id}}">
+                                            
+                                        </span>
+                                    </ul>
+                                    <div id="csrf">
+                                        {% csrf_token %}
+                                    </div>
+                                    <button id="{{game.id}}" class="btn btn-primary mt-2">toggle status</button>
+                                </div>
+                            </div>
+                        </div>
+                        <script>
+                            $(document).ready(function(){
+                                $("#{{game.id}}").click(function(){
+                                    $.ajax({
+                                        type: 'POST',
+                                        url: "{% url 'togglestatus' %}",
+                                        headers: {
+                                            'X-CSRFToken': document.getElementById('csrf').querySelector('input').value
+                                        },
+                                        data: {
+                                            "gameid": {{game.id}},
+                                        },
+                                        dataType: 'json',
+                                        success: function(response){
+                                            $("#toggle{{game.id}}fixed").hide();
+                                            if (response["data"]){
+                                                $("#toggle{{game.id}}").html("<li>played<li>");
+                                            }
+                                            else{
+                                                $("#toggle{{game.id}}").html("<li>not played<li>");
+                                            }
+                                        },
+                                        error: function (response){
+                                            alert(response["responseJSON"]["error"])
+                                        }
+                                    })
+                                });
+                            });
+                        </script> 
+                    {% endfor %}
                 </div>
-                <span id="toggle{{game.id}}fixed">
-                    {% if game.played %}
-                        <li>played</li>
-                    {% else %}
-                        <li>not played</li>
-                    {% endif %}
-                </span>
-                <span id="toggle{{game.id}}">
-                    
-                </span>
-                <div id="csrf">
-                    {% csrf_token %}
-                </div>
-                <button id="{{game.id}}">toggle status</button>
-                <script>
-                    $(document).ready(function(){
-                        $("#{{game.id}}").click(function(){
-                            $.ajax({
-                                type: 'POST',
-                                url: "{% url 'togglestatus' %}",
-                                headers: {
-                                    'X-CSRFToken': document.getElementById('csrf').querySelector('input').value
-                                },
-                                data: {
-                                    "gameid": {{game.id}},
-                                },
-                                dataType: 'json',
-                                success: function(response){
-                                    $("#toggle{{game.id}}fixed").hide();
-                                    if (response["data"]){
-                                        $("#toggle{{game.id}}").html("<li>played<li>");
-                                    }
-                                    else{
-                                        $("#toggle{{game.id}}").html("<li>not played<li>");
-                                    }
-                                },
-                                error: function (response){
-                                    alert(response["responseJSON"]["error"])
-                                }
-                            })
-                        });
-                    });
-                </script>
-                
-            {% endfor %}
-        </ul>
+            </div>
+        </div>
     </body>
 </html>

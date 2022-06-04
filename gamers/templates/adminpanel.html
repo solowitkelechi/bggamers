@@ -75,11 +75,6 @@
                 <div id="fixed{{game.id}}pdata">
                     {% if game.played %}
                         <li>
-                            {% for player in game.players %}
-                                {{player.discordId}}
-                            {% endfor %}
-                        </li>
-                        <li>
                             {% for winner in game.winners %}
                                 {{winner.player.discordId}} | {{winner.position}}
                             {% endfor %}
@@ -99,7 +94,6 @@
                 <span id="toggle{{game.id}}">
                     
                 </span>
-                <button onclick="showEditModal('{{game.id}}')">edit</button>
                 <div id="csrf">
                     {% csrf_token %}
                 </div>

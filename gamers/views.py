@@ -60,7 +60,7 @@ def index(request):
 def adminpanel(request):
     gameList = []
     gameDetail = {}
-    games = Game.objects.all().order_by('-pub_date')
+    games = Game.objects.filter(played=False).order_by('-pub_date')
     winners = Winners.objects.all()
     players = Player.objects.all()
     for game in games:
@@ -69,7 +69,6 @@ def adminpanel(request):
         gameDetail["pub_date"] = game.pub_date
         gameDetail['image'] = game.image
         gameDetail['host'] =  game.host
-        gameDetail["players"] = [player for player in game.player.all()]
         gameDetail["winners"] = winners.filter(game=game.id)
         gameDetail["played"] = game.played
         gameList.append(gameDetail)

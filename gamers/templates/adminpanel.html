@@ -46,7 +46,7 @@
                                 <form method="post" id="addgame" enctype="multipart/form-data">
                                     {% csrf_token %}
                                     {{gameForm|crispy}}
-                                    <input type="submit" class="btn btn-primary" value="Schedule" />
+                                    <input type="submit" class="btn btn-primary" value="schedule" />
                                     <div style="display:none" class="alert alert-primary mt-2" role="alert" id="gameFormErrors">
                                         <i class="fa-solid fa-xmark" id="closeGameErrors"></i>
                                     </div>
@@ -90,74 +90,80 @@
             <div class="container-fluid">
                 <h5 class="mb-2 mt-2">List of unplayed games</h5>
                 <div class="row">
-                    {% for game in gameList %}
-                        <div class="col-lg-4 col-md-6 mb-2 mt-2">
-                            <div class="card">
-                                <div class="card-body">
-                                    <h5 class="card-title">{{game.name}}</h5>
-                                    <ul class="list-group list-group-flush">
-                                        <li class="list-group-item">{{game.host}}</li>
-                                        <li class="list-group-item">{{game.pub_date}}</li>
-                                        <div id="fixed{{game.id}}pdata">
-                                            {% if game.played %}
-                                                <li class="list-group-item">
-                                                    {% for winner in game.winners %}
-                                                        {{winner.player.discordId}} | {{winner.position}}
-                                                    {% endfor %}
-                                                </li>
-                                            {% endif %}
-                                        </div>
-                                        <div id="{{game.id}}pdata">
+                    {% if gameList|length > 0 %}
+                        {% for game in gameList %}
+                            <div class="col-lg-4 col-md-6 mb-2 mt-2">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h5 class="card-title">{{game.name}}</h5>
+                                        <ul class="list-group list-group-flush">
+                                            <li class="list-group-item">{{game.host}}</li>
+                                            <li class="list-group-item">{{game.pub_date}}</li>
+                                            <div id="fixed{{game.id}}pdata">
+                                                {% if game.played %}
+                                                    <li class="list-group-item">
+                                                        {% for winner in game.winners %}
+                                                            {{winner.player.discordId}} | {{winner.position}}
+                                                        {% endfor %}
+                                                    </li>
+                                                {% endif %}
+                                            </div>
+                                            <div id="{{game.id}}pdata">
 
+                                            </div>
+                                            <span id="toggle{{game.id}}fixed">
+                                                {% if game.played %}
+                                                    <li class="list-group-item">played</li>
+                                                {% else %}
+                                                    <li class="list-group-item">not played</li>
+                                                {% endif %}
+                                            </span>
+                                            <span id="toggle{{game.id}}">
+                                                
+                                            </span>
+                                        </ul>
+                                        <div id="csrf">
+                                            {% csrf_token %}
                                         </div>
-                                        <span id="toggle{{game.id}}fixed">
-                                            {% if game.played %}
-                                                <li class="list-group-item">played</li>
-                                            {% else %}
-                                                <li class="list-group-item">not played</li>
-                                            {% endif %}
-                                        </span>
-                                        <span id="toggle{{game.id}}">
-                                            
-                                        </span>
-                                    </ul>
-                                    <div id="csrf">
-                                        {% csrf_token %}
+                                        <button id="{{game.id}}" class="btn btn-primary mt-2">toggle status</button>
                                     </div>
-                                    <button id="{{game.id}}" class="btn btn-primary mt-2">toggle status</button>
                                 </div>
                             </div>
-                        </div>
-                        <script>
-                            $(document).ready(function(){
-                                $("#{{game.id}}").click(function(){
-                                    $.ajax({
-                                        type: 'POST',
-                                        url: "{% url 'togglestatus' %}",
-                                        headers: {
-                                            'X-CSRFToken': document.getElementById('csrf').querySelector('input').value
-                                        },
-                                        data: {
-                                            "gameid": {{game.id}},
-                                        },
-                                        dataType: 'json',
-                                        success: function(response){
-                                            $("#toggle{{game.id}}fixed").hide();
-                                            if (response["data"]){
-                                                $("#toggle{{game.id}}").html("<li>played<li>");
+                            <script>
+                                $(document).ready(function(){
+                                    $("#{{game.id}}").click(function(){
+                                        $.ajax({
+                                            type: 'POST',
+                                            url: "{% url 'togglestatus' %}",
+                                            headers: {
+                                                'X-CSRFToken': document.getElementById('csrf').querySelector('input').value
+                                            },
+                                            data: {
+                                                "gameid": {{game.id}},
+                                            },
+                                            dataType: 'json',
+                                            success: function(response){
+                                                $("#toggle{{game.id}}fixed").hide();
+                                                if (response["data"]){
+                                                    $("#toggle{{game.id}}").html("<li>played<li>");
+                                                }
+                                                else{
+                                                    $("#toggle{{game.id}}").html("<li>not played<li>");
+                                                }
+                                            },
+                                            error: function (response){
+                                                alert(response["responseJSON"]["error"])
                                             }
-                                            else{
-                                                $("#toggle{{game.id}}").html("<li>not played<li>");
-                                            }
-                                        },
-                                        error: function (response){
-                                            alert(response["responseJSON"]["error"])
-                                        }
-                                    })
+                                        })
+                                    });
                                 });
-                            });
-                        </script> 
-                    {% endfor %}
+                            </script> 
+                        {% endfor %}
+                    {% else %}
+                        <div style="display:none" class="alert alert-primary mt-2" role="alert" id="playerFormErrors">
+                            <h6>No unplayed games</h6>
+                        </div>
+                    {% endif %}
                 </div>
             </div>
         </div>
